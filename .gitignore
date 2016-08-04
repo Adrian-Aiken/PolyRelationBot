@@ -250,3 +250,8 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
+/PolyRelationBot/PolyRelationBot/bunwolf.jpg
+/PolyRelationBot/PolyRelationBot/save.png
+/PolyRelationBot/PolyRelationBot/PolyRelationBot.pyc
+/PolyRelationBot/PolyRelationBot/nodes.pkl
+/PolyRelationBot/PolyRelationBot/Comparison.jpg

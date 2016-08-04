@@ -1,0 +1,18 @@
+-- TO ADD --
+* Make images circular
+* Integrate with telegram
+* Check for telegram names and retrieve images
+
+
+-- Edge Structure --
+Name1
+Name2
+Relationship
+
+For each in toVisit
+* Find all sets that contain the name
+* For each edge
+** Getname that isn't current name
+** If other name isn't visited:
+*** Add current edge to edges list
+*** Add name to toVisit
