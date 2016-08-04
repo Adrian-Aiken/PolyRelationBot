@@ -124,39 +124,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-'''
-img=mpimg.imread('bunwolf.jpg')
-# draw graph without images
-G =nx.Graph()
-G.add_edge('a','b',image=img,size=0.1)
-G.add_edge('b','c',image=img,size=0.05)
-G.add_edge('c','d',image=img,size=0.02)
-G.add_edge('d','e',image=img,size=0.075)
-G.add_edge('a','a',image=img,size=0.2)
-
-pos=nx.spring_layout(G)
-nx.draw(G,pos)
-
-# add images on edges
-ax=plt.gca()
-fig=plt.gcf()
-label_pos = 0.5 # middle of edge, halfway between nodes
-trans = ax.transData.transform
-trans2 = fig.transFigure.inverted().transform
-imsize = 0.1 # this is the image size
-for (n1,n2) in G.edges():
-    (x1,y1) = pos[n1]
-    (x2,y2) = pos[n2]
-    (x,y) = (x1 * label_pos + x2 * (1.0 - label_pos),
-             y1 * label_pos + y2 * (1.0 - label_pos))
-    xx,yy = trans((x,y)) # figure coordinates
-    xa,ya = trans2((xx,yy)) # axes coordinates
-    imsize = G[n1][n2]['size']
-    img =  G[n1][n2]['image']
-    a = plt.axes([xa-imsize/2.0,ya-imsize/2.0, imsize, imsize ])
-    a.imshow(img)
-    a.set_aspect('equal')
-    a.axis('off')
-plt.savefig('save.png') 
-'''
