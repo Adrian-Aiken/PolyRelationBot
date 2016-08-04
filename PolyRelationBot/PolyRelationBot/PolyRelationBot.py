@@ -94,11 +94,69 @@ def getEdges(name):
 #### Graph Drawing ####
 #######################
 def generateGraph(name):
-    edges, nodes = getEdges(name)
 
+    edges, nodes = getEdges(name)
+    relations = dict()
+    labels = dict()
+
+    G = nx.Graph()
+    G.clear()
+    for edge in edges:
+        G.add_edge(edge.name1.lower(), edge.name2.lower())
+        relations[(edge.name1.lower(), edge.name2.lower())] = edge.relationship
+
+    for node in nodes:
+        labels[node.lower()] = node
+
+    pos = nx.spring_layout(G)
+
+    plt.cla()
+    plt.axis('off')
+    nx.draw_networkx_nodes(G, pos, node_size = 700)
+    nx.draw_networkx_edges(G, pos)
+    nx.draw_networkx_edge_labels(G, pos, relations)
+    nx.draw_networkx_labels(G, pos, labels)
+
+    plt.savefig("save.png")
 
 def main():
-    getEdges("bob")    
+    generateGraph("Jay")
 
 if __name__ == '__main__':
     main()
+
+'''
+img=mpimg.imread('bunwolf.jpg')
+# draw graph without images
+G =nx.Graph()
+G.add_edge('a','b',image=img,size=0.1)
+G.add_edge('b','c',image=img,size=0.05)
+G.add_edge('c','d',image=img,size=0.02)
+G.add_edge('d','e',image=img,size=0.075)
+G.add_edge('a','a',image=img,size=0.2)
+
+pos=nx.spring_layout(G)
+nx.draw(G,pos)
+
+# add images on edges
+ax=plt.gca()
+fig=plt.gcf()
+label_pos = 0.5 # middle of edge, halfway between nodes
+trans = ax.transData.transform
+trans2 = fig.transFigure.inverted().transform
+imsize = 0.1 # this is the image size
+for (n1,n2) in G.edges():
+    (x1,y1) = pos[n1]
+    (x2,y2) = pos[n2]
+    (x,y) = (x1 * label_pos + x2 * (1.0 - label_pos),
+             y1 * label_pos + y2 * (1.0 - label_pos))
+    xx,yy = trans((x,y)) # figure coordinates
+    xa,ya = trans2((xx,yy)) # axes coordinates
+    imsize = G[n1][n2]['size']
+    img =  G[n1][n2]['image']
+    a = plt.axes([xa-imsize/2.0,ya-imsize/2.0, imsize, imsize ])
+    a.imshow(img)
+    a.set_aspect('equal')
+    a.axis('off')
+plt.savefig('save.png') 
+'''

@@ -1,13 +1,17 @@
 -- TO ADD --
-* Make images circular
 * Integrate with telegram
 * Check for telegram names and retrieve images
+* Make images circular
+* Make graph more consistently spread out
+* Get rid of extra whitespace around edges
+* Generally make graph more appealing
 
 
 -- Edge Structure --
 Name1
 Name2
 Relationship
+
 
 For each in toVisit
 * Find all sets that contain the name
