@@ -1,0 +1,7 @@
+{
+  "self_words": [ "i", "me" ],
+  "remove_words": [ "not" ],
+  "bot_token": "Token",
+  "graph_file": "save.png",
+  "nodes_file":  "nodes.pkl"
+}

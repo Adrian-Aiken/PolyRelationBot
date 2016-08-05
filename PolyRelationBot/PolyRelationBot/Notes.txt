@@ -1,9 +1,19 @@
 -- TO ADD --
-* Integrate with telegram
+* Add 'kill switch'
+* Add explaination of commands
+* Refine empty relationships
+* Check empty names
+* Make remove check for 'and' to allow multi-word names
+* Put on VPS
+* Add story about updating bot
 * Check for telegram names and retrieve images
+* Adjust name placement for telegram images
 * Make images circular
 * Make graph more consistently spread out
 * Get rid of extra whitespace around edges
+* Change background color
+* Add watermark-ish thing
+* Find a good font for things
 * Generally make graph more appealing
 
 

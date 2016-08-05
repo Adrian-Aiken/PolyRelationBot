@@ -4,14 +4,14 @@ Telegram bot to graph relationships between people
 """
 # Author: Adrian Aiken (adaiken@outlook.com)
 
-import networkx as nx
+import json
+import logging
+from telegram.ext import Updater, CommandHandler, Job
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
-import pickle
+import networkx as nx
 import os
-
-NODES_FILE_NAME = "nodes.pkl";
-nodes = set()
+import pickle
 
 class RelationNode:
     def __init__(self, name1, name2, relationship):
@@ -36,13 +36,34 @@ class RelationNode:
             return self.name2
         return self.name1
 
+    def __str__(self):
+        return "[" + self.name1 + "] and [" + self.name2 + "] are [" + self.relationship + "]"
+
 ######################################################
 ###### Startup - needs to be present every time ######
 ######################################################
-if not os.path.exists(NODES_FILE_NAME):
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+with open('Config.json', 'r') as configfile:
+    config = json.load(configfile)
+with open('Strings.json', 'r') as stringsfile:
+    strings = json.load(stringsfile)
+
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.DEBUG)
+
+nodes = set()
+
+def saveNodes():
+    f = file(config["nodes_file"], "w")
+    pickle.dump(nodes, f)
+    f.close()
+
+if not os.path.exists(config["nodes_file"]):
     saveNodes()
 
-f = file(NODES_FILE_NAME)
+f = file(config["nodes_file"])
 nodes = pickle.load(f)
 
 ###########################
@@ -67,11 +88,6 @@ def removeNode(name1, name2):
 
     saveNodes()
 
-def saveNodes():
-    f = file(NODES_FILE_NAME, "w")
-    pickle.dump(nodes, f)
-    f.close()
-
 def getEdges(name):
     visited = []
     toVisit = [name]
@@ -84,7 +100,7 @@ def getEdges(name):
         curNodes = [n for n in nodes if n.hasName(curName)]
         for node in curNodes:
             nodeName = node.getOtherName(curName)
-            if not nodeName.lower() in map(str.lower, visited):
+            if not nodeName.lower() in map(unicode.lower, visited):
                 edges.append(node)
                 toVisit.append(nodeName)
 
@@ -94,7 +110,6 @@ def getEdges(name):
 #### Graph Drawing ####
 #######################
 def generateGraph(name):
-
     edges, nodes = getEdges(name)
     relations = dict()
     labels = dict()
@@ -112,15 +127,76 @@ def generateGraph(name):
 
     plt.cla()
     plt.axis('off')
-    nx.draw_networkx_nodes(G, pos, node_size = 700)
+    nx.draw_networkx_nodes(G, pos, node_size = 1400)
     nx.draw_networkx_edges(G, pos)
     nx.draw_networkx_edge_labels(G, pos, relations)
     nx.draw_networkx_labels(G, pos, labels)
 
-    plt.savefig("save.png")
+    plt.savefig(config["graph_file"])
+
+###############################################
+#### Telegram message handling and parsing ####
+###############################################
+def addRelationship(bot, update):
+    m = update.message.text.replace("/add ", "")
+    name1 = m[:m.lower().find(" is ")]
+    name2 = m[m.lower().find(" with ") + 6:]
+    relationship = m[m.lower().find(" is ") + 4:m.lower().find(" with ")]
+    
+    if relationship.lower() in config["remove_words"]:
+        removeRelationship(bot, update)
+        return
+
+    if name1.lower() in config["self_words"]:
+        name1 = "@" + update.message.from_user.username
+    if name2.lower() in config["self_words"]:
+        name2 = "@" + update.message.from_user.username
+
+    addNode(name1, name2, relationship)
+    bot.sendMessage(update.message.chat_id, text = strings["added"].format(name1, name2, relationship))
+        
+def removeRelationship(bot, update):
+    m = update.message.text.replace("/remove ", "").split(" ")
+    name1 = m[0]
+    name2 = m[-1]
+
+    if name1.lower() in config["self_words"]:
+        name1 = "@" + update.message.from_user.username
+    if name2.lower() in config["self_words"]:
+        name2 = "@" + update.message.from_user.username
+
+    removeNode(name1, name2)
+    bot.sendMessage(update.message.chat_id, text = strings["removed"].format(name1, name2))
+
+def showRelationship(bot, update, args):
+    name = unicode(args[0])
+    generateGraph(name)
+    photofile = open(config["graph_file"].encode("utf-8"), "rb")
+    bot.sendPhoto(update.message.chat_id, photofile)
+
+def showHelp(bot, update):
+    bot.sendMessage(update.message.chat_id, text = strings["help"])
+
+####################
+#### Main stuff ####
+####################
+def error(bot, update, error):
+    logger.warn('Update "%s" caused error "%s"' % (update, error))
 
 def main():
-    generateGraph("Jay")
+    updater = Updater(config["bot_token"])
+    dp = updater.dispatcher
+
+    dp.add_handler(CommandHandler("add", addRelationship))
+    dp.add_handler(CommandHandler("remove", removeRelationship))
+    dp.add_handler(CommandHandler("show", showRelationship, pass_args = True))
+    dp.add_handler(CommandHandler("help", showHelp))
+
+    dp.add_error_handler(error)
+
+    updater.start_polling()
+
+    updater.idle()
 
 if __name__ == '__main__':
     main()
