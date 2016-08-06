@@ -1,5 +1,7 @@
 {
   "help": "This is help text! Yell at me if I forgot to update this.",
   "removed": "{0} and {1} are no longer together.",
-  "added": "{0} and {1} are now {2}"
+  "added": "{0} and {1} are now {2}",
+  "error_add": "Sorry, I couldn't parse your message. Try '/add <name> + <name> = <relationship>'",
+  "error_remove":  "Sorry, I couldn't parse your message. Try '/remove <name>, <name>'"
 }

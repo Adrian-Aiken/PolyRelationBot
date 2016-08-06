@@ -139,9 +139,14 @@ def generateGraph(name):
 ###############################################
 def addRelationship(bot, update):
     m = update.message.text.replace("/add ", "")
-    name1 = m[:m.lower().find(" is ")]
-    name2 = m[m.lower().find(" with ") + 6:]
-    relationship = m[m.lower().find(" is ") + 4:m.lower().find(" with ")]
+
+    if m.find(" + ") == -1 or m.find(" = ") == -1:
+        bot.sendMessage(update.message.chat_id, text = strings["error_add"])
+        return
+
+    name1 = m[:m.lower().find(" + ")]
+    relationship = m[m.lower().find(" = ") + 3:]
+    name2 = m[m.lower().find(" + ") + 3:m.lower().find(" = ")]
     
     if relationship.lower() in config["remove_words"]:
         removeRelationship(bot, update)
@@ -156,9 +161,13 @@ def addRelationship(bot, update):
     bot.sendMessage(update.message.chat_id, text = strings["added"].format(name1, name2, relationship))
         
 def removeRelationship(bot, update):
-    m = update.message.text.replace("/remove ", "").split(" ")
+    if update.message.text.find(", ") == -1:
+        bot.sendMessage(update.message.chat_id, text = strings["error_add"])
+        return
+
+    m = update.message.text.replace("/remove ", "").split(", ")
     name1 = m[0]
-    name2 = m[-1]
+    name2 = m[1]
 
     if name1.lower() in config["self_words"]:
         name1 = "@" + update.message.from_user.username
@@ -169,7 +178,13 @@ def removeRelationship(bot, update):
     bot.sendMessage(update.message.chat_id, text = strings["removed"].format(name1, name2))
 
 def showRelationship(bot, update, args):
-    name = unicode(args[0])
+    if len(args) == 0:
+        name = "@" + update.message.from_user.username
+    else:
+        name = unicode(args[0])
+        if name.lower() in config["self_words"]:
+            name = "@" + update.message.from_user.username
+
     generateGraph(name)
     photofile = open(config["graph_file"].encode("utf-8"), "rb")
     bot.sendPhoto(update.message.chat_id, photofile)

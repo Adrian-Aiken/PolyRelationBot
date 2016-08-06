@@ -3,5 +3,6 @@
   "remove_words": [ "not" ],
   "bot_token": "Token",
   "graph_file": "save.png",
-  "nodes_file":  "nodes.pkl"
+  "nodes_file": "nodes.pkl",
+  "admins": [ "goatie" ]
 }
