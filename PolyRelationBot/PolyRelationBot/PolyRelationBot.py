@@ -145,13 +145,17 @@ def generateGraph(name):
 def addRelationship(bot, update):
     m = update.message.text.replace("/add ", "")
 
-    if m.find(" + ") == -1 or m.find(" = ") == -1:
+    if m.find(" + ") == -1:
         bot.sendMessage(update.message.chat_id, text = strings["error_add"])
         return
 
-    name1 = m[:m.lower().find(" + ")]
-    relationship = m[m.lower().find(" = ") + 3:]
-    name2 = m[m.lower().find(" + ") + 3:m.lower().find(" = ")]
+    name1 = m[:m.find(" + ")]
+    if m.find(" = ") == -1:
+        relationship = ""
+        name2 = m[m.find(" + ") + 3:]
+    else:
+        relationship = m[m.find(" = ") + 3:]
+        name2 = m[m.find(" + ") + 3:m.find(" = ")]
     
     if relationship.lower() in config["remove_words"]:
         removeRelationship(bot, update)
@@ -163,6 +167,8 @@ def addRelationship(bot, update):
         name2 = "@" + update.message.from_user.username
 
     addNode(name1, name2, relationship)
+    if relationship == "":
+        relationship = "together"
     bot.sendMessage(update.message.chat_id, text = strings["added"].format(name1, name2, relationship))
         
 def removeRelationship(bot, update):
