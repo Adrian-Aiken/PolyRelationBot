@@ -88,6 +88,18 @@ def removeNode(name1, name2):
 
     saveNodes()
 
+def removeFromGraph(name):
+    toRemove = [n for n in nodes if n.hasName(name)]
+    
+    for node in toRemove:
+        nodes.remove(node)
+
+    saveNodes()
+
+def purgeNodes():
+    nodes.clear()
+    saveNodes()
+
 def getEdges(name):
     visited = []
     toVisit = [name]
@@ -204,6 +216,21 @@ def showRelationship(bot, update):
 def showHelp(bot, update):
     bot.sendMessage(update.message.chat_id, text = strings["help"])
 
+def removeAll(bot, update):
+    name = update.message.text.replace("/removeAll", "").strip()
+    if len(name) == 0:
+        name = "@" + update.message.from_user.username
+    elif name.lower() in config["self_words"]:
+        name = "@" + update.message.from_user.username
+
+    removeFromGraph(name)
+    bot.sendMessage(update.message.chat_id, text = strings["remove_all"].format(name))
+
+def purge(bot, update):
+    if update.message.from_user.username.lower() in config["admins"]:
+        purgeNodes()
+        bot.sendMessage(update.message.chat_id, text = strings["purged"])
+
 ####################
 #### Main stuff ####
 ####################
@@ -218,6 +245,8 @@ def main():
     dp.add_handler(CommandHandler("remove", removeRelationship))
     dp.add_handler(CommandHandler("show", showRelationship))
     dp.add_handler(CommandHandler("help", showHelp))
+    dp.add_handler(CommandHandler("removeAll", removeAll))
+    dp.add_handler(CommandHandler("purge", purge))
 
     dp.add_error_handler(error)
 

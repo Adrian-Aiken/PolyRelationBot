@@ -1,8 +1,10 @@
 {
   "help": "This is a telegram bot to help you map your relationship. Use /add and /remove to modify your relationship. You can always youse 'I' or 'me' in place of your own name.",
   "removed": "{0} and {1} are no longer together.",
+  "remove_all":  "{0} no longer has any relationships",
   "added": "{0} and {1} are now {2}",
   "error_add": "Sorry, I couldn't parse your message. Try '/add <name> + <name> = <relationship>'",
   "error_remove": "Sorry, I couldn't parse your message. Try '/remove <name>, <name>'",
-  "error_show":  "Sorry, I couldn't find any relationships"
+  "error_show": "Sorry, I couldn't find any relationships",
+  "purged": "All nodes purged. Hope you know what you're doing..."
 }

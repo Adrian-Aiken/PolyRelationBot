@@ -1,7 +1,5 @@
 -- TO ADD --
 * Check empty names
-* Add "add" without =
-* Make remove check for 'and' to allow multi-word names
 * Put on VPS
 * Add story about updating bot
 * Check for telegram names and retrieve images
@@ -14,7 +12,6 @@
 * Find a good font for things
 * Generally make graph more appealing
 * Merge relationships
-* Remove all relationships for a given name
 
 
 -- Edge Structure --
