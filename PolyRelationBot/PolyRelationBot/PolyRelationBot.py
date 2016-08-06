@@ -111,6 +111,9 @@ def getEdges(name):
 #######################
 def generateGraph(name):
     edges, nodes = getEdges(name)
+    if len(edges) == 0:
+        return False
+
     relations = dict()
     labels = dict()
 
@@ -133,6 +136,8 @@ def generateGraph(name):
     nx.draw_networkx_labels(G, pos, labels)
 
     plt.savefig(config["graph_file"])
+
+    return True
 
 ###############################################
 #### Telegram message handling and parsing ####
@@ -162,7 +167,7 @@ def addRelationship(bot, update):
         
 def removeRelationship(bot, update):
     if update.message.text.find(", ") == -1:
-        bot.sendMessage(update.message.chat_id, text = strings["error_add"])
+        bot.sendMessage(update.message.chat_id, text = strings["error_remove"])
         return
 
     m = update.message.text.replace("/remove ", "").split(", ")
@@ -177,17 +182,18 @@ def removeRelationship(bot, update):
     removeNode(name1, name2)
     bot.sendMessage(update.message.chat_id, text = strings["removed"].format(name1, name2))
 
-def showRelationship(bot, update, args):
-    if len(args) == 0:
+def showRelationship(bot, update):
+    name = update.message.text.replace("/show", "").strip()
+    if len(name) == 0:
         name = "@" + update.message.from_user.username
-    else:
-        name = unicode(args[0])
-        if name.lower() in config["self_words"]:
-            name = "@" + update.message.from_user.username
+    elif name.lower() in config["self_words"]:
+        name = "@" + update.message.from_user.username
 
-    generateGraph(name)
-    photofile = open(config["graph_file"].encode("utf-8"), "rb")
-    bot.sendPhoto(update.message.chat_id, photofile)
+    if generateGraph(name):
+        photofile = open(config["graph_file"].encode("utf-8"), "rb")
+        bot.sendPhoto(update.message.chat_id, photofile)
+    else:
+        bot.sendMessage(update.message.chat_id, text = strings["error_show"])
 
 def showHelp(bot, update):
     bot.sendMessage(update.message.chat_id, text = strings["help"])
@@ -204,7 +210,7 @@ def main():
 
     dp.add_handler(CommandHandler("add", addRelationship))
     dp.add_handler(CommandHandler("remove", removeRelationship))
-    dp.add_handler(CommandHandler("show", showRelationship, pass_args = True))
+    dp.add_handler(CommandHandler("show", showRelationship))
     dp.add_handler(CommandHandler("help", showHelp))
 
     dp.add_error_handler(error)

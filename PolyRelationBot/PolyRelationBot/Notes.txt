@@ -1,8 +1,6 @@
 -- TO ADD --
-* Add 'kill switch'
-* Add explaination of commands
-* Refine empty relationships
 * Check empty names
+* Add "add" without =
 * Make remove check for 'and' to allow multi-word names
 * Put on VPS
 * Add story about updating bot
@@ -15,6 +13,8 @@
 * Add watermark-ish thing
 * Find a good font for things
 * Generally make graph more appealing
+* Merge relationships
+* Remove all relationships for a given name
 
 
 -- Edge Structure --
