@@ -25,9 +25,9 @@
     <Compile Include="PolyRelationBot.py" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Config.json" />
+    <Content Include="config.json" />
     <Content Include="Notes.txt" />
-    <Content Include="Strings.json" />
+    <Content Include="strings.json" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

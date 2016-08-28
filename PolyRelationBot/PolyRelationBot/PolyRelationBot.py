@@ -45,9 +45,9 @@ class RelationNode:
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-with open('Config.json', 'r') as configfile:
+with open('config.json', 'r') as configfile:
     config = json.load(configfile)
-with open('Strings.json', 'r') as stringsfile:
+with open('strings.json', 'r') as stringsfile:
     strings = json.load(stringsfile)
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -138,7 +138,7 @@ def generateGraph(name):
     for node in nodes:
         labels[node.lower()] = node
 
-    pos = nx.spring_layout(G)
+    pos = nx.shell_layout(G)
 
     plt.cla()
     plt.axis('off')
@@ -243,7 +243,7 @@ def main():
 
     dp.add_handler(CommandHandler("add", addRelationship))
     dp.add_handler(CommandHandler("remove", removeRelationship))
-    dp.add_handler(CommandHandler("show", showRelationship))
+    dp.add_handler(CommandHandler("show", showRelationship, allow_edited = True))
     dp.add_handler(CommandHandler("help", showHelp))
     dp.add_handler(CommandHandler("removeAll", removeAll))
     dp.add_handler(CommandHandler("purge", purge))
@@ -254,5 +254,5 @@ def main():
 
     updater.idle()
 
-if __name__ == '__main__':
-    main()
+#if __name__ == '__main__':
+#    main()

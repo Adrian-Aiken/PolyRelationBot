@@ -1,7 +1,7 @@
 {
   "self_words": [ "i", "me" ],
   "remove_words": [ "not" ],
-  "bot_token": "Token",
+  "bot_token": "195953380:AAF2CekxT2Wy8dNHWx78NSfkBUuhYhCV1OE",
   "graph_file": "save.png",
   "nodes_file": "nodes.pkl",
   "admins": [ "goatie" ]
