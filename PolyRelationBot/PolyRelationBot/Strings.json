@@ -6,5 +6,6 @@
   "error_add": "Sorry, I couldn't parse your message. Try '/add <name> + <name> = <relationship>'",
   "error_remove": "Sorry, I couldn't parse your message. Try '/remove <name>, <name>'",
   "error_show": "Sorry, I couldn't find any relationships",
-  "purged": "All nodes purged. Hope you know what you're doing..."
+  "purged": "All nodes purged. Hope you know what you're doing...",
+  "registered":  "Thanks! In the future your picture will show up on graphs."
 }

@@ -1,8 +1,10 @@
 {
   "self_words": [ "i", "me" ],
   "remove_words": [ "not" ],
-  "bot_token": "195953380:AAF2CekxT2Wy8dNHWx78NSfkBUuhYhCV1OE",
+  "bot_token": "TOKEN",
   "graph_file": "save.png",
   "nodes_file": "nodes.pkl",
-  "admins": [ "goatie" ]
+  "users_file": "users.pkl",
+  "admins": [ "goatie" ],
+  "imgSize": 0.1
 }
