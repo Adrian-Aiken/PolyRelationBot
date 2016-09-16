@@ -153,16 +153,19 @@ def generateGraph(name, bot):
         relations[(edge.name1.lower(), edge.name2.lower())] = edge.relationship
 
     for node in nodes:
-        if node[0] == '@' and node[1:].lower() in users:
-            userId = users[node[1:].lower()]
-            photos = bot.getUserProfilePhotos(userId, limit = 1)
-            if len(photos.photos) > 0:
-                photoId = photos.photos[0][0].file_id
-                photoFile = bot.getFile(photoId)
-                photoFile.download(node[1:])
-                G.node[node.lower()]['image'] = mpimg.imread(node[1:]);
-                img = mpimg.imread(node[1:])
-        else:
+        try:
+            if node[0] == '@' and node[1:].lower() in users:
+                userId = users[node[1:].lower()]
+                photos = bot.getUserProfilePhotos(userId, limit = 1)
+                if len(photos.photos) > 0:
+                    photoId = photos.photos[0][0].file_id
+                    photoFile = bot.getFile(photoId)
+                    photoFile.download(node[1:])
+                    G.node[node.lower()]['image'] = mpimg.imread(node[1:]);
+                    img = mpimg.imread(node[1:])
+            else:
+                labels[node.lower()] = node
+        except:
             labels[node.lower()] = node
     
     plt.cla()
@@ -203,7 +206,7 @@ def generateGraph(name, bot):
 #### Telegram message handling and parsing ####
 ###############################################
 def isPrivate(update):
-    return update.chat.type is 'private'
+    return update.message.chat.type.lower() == u'private'
 
 def addRelationship(bot, update):
     if not isPrivate(update):
