@@ -164,23 +164,20 @@ def generateGraph(name, bot):
                 img = mpimg.imread(node[1:])
         else:
             labels[node.lower()] = node
-
-    pos = nx.shell_layout(G)
     
     plt.cla()
 
     fig = plt.gcf()
     ax = plt.gca()
-    ax.set_aspect('equal')
+    ax.set_aspect('auto')
     plt.axis('off')
-    
+
+    pos = nx.spring_layout(G)
+
     nx.draw_networkx_nodes(G, pos, node_size = 1400)
     nx.draw_networkx_edges(G, pos)
     nx.draw_networkx_edge_labels(G, pos, relations)
     nx.draw_networkx_labels(G, pos, labels)
-    
-    plt.xlim(-1.5, 1.5);
-    plt.ylim(-1.5, 1.5);
 
     trans = ax.transData.transform
     trans2 = fig.transFigure.inverted().transform
@@ -191,20 +188,27 @@ def generateGraph(name, bot):
         if 'image' in G.node[n]:
             xx,yy = ax.transData.transform(pos[n]) # figure coordinates
             xa,ya = fig.transFigure.inverted().transform((xx,yy)) # axes coordinates
-            a = plt.axes([xa-i2/2.0,ya-i2, imgSize, imgSize])
+            a = plt.axes([xa-i2,ya-i2, imgSize, imgSize])
+            a.set_aspect('auto')
             a.imshow(G.node[n]['image'])
-            a.set_aspect('equal')
             plt.axis('off')  
             plt.title(n, y = -0.45)
     
     plt.savefig(config["graph_file"])
+    plt.clf()
 
     return True
 
 ###############################################
 #### Telegram message handling and parsing ####
 ###############################################
+def isPrivate(update):
+    return update.chat.type is 'private'
+
 def addRelationship(bot, update):
+    if not isPrivate(update):
+        return;
+
     addUser(update.message.from_user.username, update.message.from_user.id);
 
     m = update.message.text.replace("/add ", "")
@@ -236,6 +240,9 @@ def addRelationship(bot, update):
     bot.sendMessage(update.message.chat_id, text = strings["added"].format(name1, name2, relationship))
         
 def removeRelationship(bot, update):
+    if not isPrivate(update):
+        return;
+
     addUser(update.message.from_user.username, update.message.from_user.id);
     
     if update.message.text.find(", ") == -1:
@@ -278,6 +285,9 @@ def showHelp(bot, update):
     bot.sendMessage(update.message.chat_id, text = strings["help"])
 
 def removeAll(bot, update):
+    if not isPrivate(update):
+        return;
+
     name = update.message.text.replace("/removeAll", "").strip()
     if len(name) == 0:
         name = "@" + update.message.from_user.username
@@ -288,6 +298,9 @@ def removeAll(bot, update):
     bot.sendMessage(update.message.chat_id, text = strings["remove_all"].format(name))
 
 def purge(bot, update):
+    if not isPrivate(update):
+        return;
+
     if update.message.from_user.username.lower() in config["admins"]:
         purgeNodes()
         bot.sendMessage(update.message.chat_id, text = strings["purged"])
